@@ -1,0 +1,194 @@
+import numpy as np
+import cv2
+import time
+from my_mark_detector import MarkDetector, FaceDetector
+from branch_test1.pose_estimator import PoseEstimator
+from calculation import eye_calculation
+from datetime import datetime
+
+lastsave = 0
+
+RED = (0, 0, 255)
+GREEN = (0, 255, 0)
+BLUE = (255, 0, 0)
+YELLOW = (0, 255, 255)
+SKYBLUE = (255, 255, 0)
+PURPLE = (255, 0, 255)
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+
+ALL = list(range(0, 68))
+RIGHT_EYEBROW = list(range(17, 22))
+LEFT_EYEBROW = list(range(22, 27))
+RIGHT_EYE = list(range(36, 42))
+LEFT_EYE = list(range(42, 48))
+NOSE = list(range(27, 36))
+MOUTH_OUTLINE = list(range(48, 61))
+MOUTH_INLINE = list(range(51, 68))
+FACE_OUTLINE = list(range(0, 17))
+NOTHING = list(range(0, 0))
+MARK_INDEX = RIGHT_EYE + LEFT_EYE + MOUTH_INLINE
+
+frame_cnt = 0
+frame_sum = 0
+frame_avg = 0
+
+video_capture = cv2.VideoCapture(0)  # 카메라
+
+width = video_capture.get(cv2.CAP_PROP_FRAME_WIDTH)
+height = video_capture.get(cv2.CAP_PROP_FRAME_HEIGHT)
+
+pose_estimator = PoseEstimator(img_size=(height, width), model_path="../assets/model.txt")
+
+face_detector = FaceDetector()
+mark_detector = MarkDetector(save_model="../assets/shape_predictor_68_face_landmarks.dat")  # 경로 확인 필수!!
+
+eye_calc = eye_calculation()
+
+
+def distance(p1, p2):
+    return ((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2) ** (1 / 2)
+
+count_head = 0
+count_mouth = 0
+max_count = 50
+min_count = 0
+
+def leftRight(mark):
+    num = mark[3][0][0] - mark[2][0][0]
+    if num >= 6: return 0
+    elif -6 < num < 6: return 2
+    else: return 1
+
+def head(mark):
+    # 고개 안숙였을 때 (현재)
+    a = 1.5 / 5
+    # 고개 숙였을 때 (1초 뒤)
+    b = distance(mark[27], mark[30]) / distance(mark[30], mark[8])
+
+    if (b > a * 1.8): return 1
+    else: return 0
+
+def mouth(mark):
+    # 입을 다물었을 때 (평상시)
+    a = 1 / 2
+    # 하품할 때
+    b = distance(mark[62], mark[66]) / distance(mark[60], mark[64])
+
+    if (b > a * 1.5): return 1
+    else: return 0
+
+
+head_degree = []
+
+if video_capture.isOpened():
+    print("camera is ready")
+    while True:
+        frame_cnt += 1
+        start_t = time.time()
+        key = cv2.waitKey(1)
+        if key == 27:  # ESC
+            break
+        ret, img = video_capture.read()
+
+        # 시간 측정
+        now = datetime.now()
+        now_second_before = now.second
+        print("현재 시간: ", now_second_before, "초")
+        if now_second_before == 0:
+            now_second_before = 59
+
+        # img, cmpos = eye_calc.img_Preprocessing(img)  # 프레임별 이미지 전처리
+        face_box = face_detector.get_faceboxes(img)  # 전처리한 이미지에서 얼굴 검출
+        if face_box is not None:
+            landmark = mark_detector.get_marks(img, face_box)  # 얼굴에서 랜드마크 추출 type:list
+
+            landmark_ndarray = np.array(landmark, dtype=np.float32)  # 파라미터 타입은 numpy.ndarray으로 해야함
+            # 추가로 solve_pose_by_68_points 내부 함수 중 cv2.solvePnP의 인자중 랜드마크는 np.float32로 해주어야 한다
+            pose = pose_estimator.solve_pose_by_68_points(landmark_ndarray)
+
+            # # 눈 감는거 + 자는거(부 정확함) 판단=======================================================
+            eye_close_status = eye_calc.eye_close(landmark[36:42], landmark[42:48])
+            if eye_close_status:
+                eye_calc.close(img)
+                if eye_calc.close.count >= 7:
+                    cv2.putText(img, "SLEEPING   !!!", (100, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, RED, 2)
+            # # 눈 감김 판단 끝 =======================================================================
+
+            # # 시각화 ===============================================================================
+
+            # # x, y, z 축 보고 싶다면?
+            axis = pose_estimator.get_axis(img, pose[0], pose[1])  # 축에 대한 데이터를 쓰고 싶은데 어디있는지 모름 ㅎ
+            # axis = [[[RED_x RED_y]],[[GREEN_x GREEN_y]],[[BLUE_x BLUE_y]],[[CENTER_x CENTER_y]]]
+            # --> BLUE(정면) GREEN(아래) RED(좌측) CENTER(중심)
+            pose_estimator.draw_axes(img, pose[0], pose[1])
+
+            axis = axis.tolist()  # numpy array를 list로 변환
+            # 고개 돌리는지 확인
+            if leftRight(axis) == 0:
+                cv2.putText(img, "RIGHT", (100, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.7, RED, 2)
+            elif leftRight(axis) == 2:
+                cv2.putText(img, "FACADE", (100, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.7, RED, 2)
+            else:
+                cv2.putText(img, "LEFT", (100, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.7, RED, 2)
+
+            # 고개 내리는지 확인
+            if (head(landmark) == 1):
+                if count_head < max_count:
+                    count_head += 1
+            else:
+                if count_head > min_count:
+                    count_head -= 1
+            if count_head > 25:
+                cv2.putText(img, "sleep_head!!", (100, 70), cv2.FONT_HERSHEY_SIMPLEX, 0.7, SKYBLUE, 2)
+
+            # 하품 확인
+            if (mouth(landmark) == 1):
+                if count_mouth < max_count:
+                    count_mouth += 1
+            else:
+                if count_mouth > min_count:
+                    count_mouth -= 1
+            if count_mouth > 35:
+                cv2.putText(img, "Yawn!!", (100, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.7, SKYBLUE, 2)
+
+            # # 얼굴 랜드마크 보고 싶다면
+            mark_detector.draw_marks(img, landmark[0:], color=GREEN)
+
+
+
+            # 시작하고나서부터 1분이 흐른뒤까지
+            now_now = datetime.now()
+            now_second_now = now_now.second
+
+            # if head(landmark) == 0:
+            #     head_degree.append(distance(landmark[27], landmark[30]) / distance(landmark[30], landmark[8]))
+            #
+            #     if now_second_now == now_second_before - 1:
+            #         print("측정끝")
+            #
+            #         listSum = sum(head_degree)
+            #         listMean = listSum / len(head_degree)
+            #         print(listMean)
+
+            while (not (now_second_now == now_second_before - 1)):
+                if head(landmark) == 0:
+                    head_degree.append(distance(landmark[27], landmark[30]) / distance(landmark[30], landmark[8]))
+
+            if (len(head_degree)) > 500:
+                listSum = sum(head_degree)
+                listMean = listSum / len(head_degree)
+                print(listMean)
+
+
+        frame_sum += int(1. / (time.time() - start_t))
+        if frame_cnt == 3:
+            frame_avg = round(frame_sum / frame_cnt)
+            frame_cnt = 0
+            frame_sum = 0
+        cv2.putText(img, f"FPS:{frame_avg}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, RED, 2)
+        cv2.imshow("img", img)
+
+
+cv2.destroyAllWindows()
+video_capture.release()
