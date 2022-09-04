@@ -47,7 +47,6 @@ if __name__ == '__main__':
     # train와 test로 data 나누기
     x_train, x_test, y_train, y_test = train_test_split(df_train, df_label, test_size=0.3, stratify=df_label, random_state=34)
 
-
     print(x_train.shape)
     print(x_test.shape)
     print(y_train.shape)
@@ -79,7 +78,7 @@ if __name__ == '__main__':
     MY_BATCHSIZE = 800
     mlp.fit(x_train, y_train, epochs=MY_EPOCH, batch_size=MY_BATCHSIZE)
 
-    filename = "./quickdraw_data/mlp_hd1024_512_e(10).h5"
+    filename = "quickdraw_mlp/mlp_hd1024_512_e(10).h5"
     mlp.save(filename)
 
     print(mlp.evaluate(x_test, y_test))
