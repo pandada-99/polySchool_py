@@ -1,7 +1,7 @@
 import cv2
 
 if __name__ == '__main__':
-    img = cv2.imread("Lenna.png")
+    img = cv2.imread("image/Lenna.png")
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     w_width = 200
