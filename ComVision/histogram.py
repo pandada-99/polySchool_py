@@ -41,6 +41,11 @@ if __name__ == "__main__":
     # plt.plot(hist2)
     # plt.show()
 
+    """
+    정규화 => 데이터를 정규화해서 비슷한 스케일로 맞춰주겠다. (확률 때문에 0과 1사이에 넣는거지 다른 스케일로 넣어도 상관x)
+    왜필요하냐? 키(160~180) 몸무게(50~80)가 주는 영향이 똑같은데 키가 숫자가 커서 더 큰 영향을 줌
+    에시로 min-maz Normalization는 최소값을 0으로 최대값을 1로 만들어서 중간값을 그 사이로 넣기
+    """
 
     # Min-Max Normalization 직접 구현
     norm_img = gray.astype(np.float32)
