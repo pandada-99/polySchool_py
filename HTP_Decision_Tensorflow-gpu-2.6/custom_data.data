@@ -1,0 +1,5 @@
+classes=3
+train=/home/ai22/pythonProject/HTP/data/img_train.txt
+valid=/home/ai22/pythonProject/HTP/data/img_val.txt
+names=/home/ai22/pythonProject/HTP/classes.names
+backup=/home/ai22/pythonProject/HTP/data/backup/
