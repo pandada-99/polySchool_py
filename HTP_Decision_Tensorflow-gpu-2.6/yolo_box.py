@@ -80,13 +80,13 @@ if __name__ == '__main__':
     # cv2.destroyAllWindows()
 
 
-    file_name = 'HTP_person_38.png'
+    file_name = 'HTP_tree_75.png'
     classes = []
     f = open('classes.txt', 'r')
     classes = [line.strip() for line in f.readlines()]
     colors = np.random.uniform(0, 255, size=(len(classes), 3))
 
-    img = cv2.imread(f"data/img/class3/{file_name}")
+    img = cv2.imread(f"data/HTP_tree/{file_name}")
     ##### test 이미지 전처리 하기 #####
 
     # cv2.createCLAHE 균일화
@@ -148,7 +148,15 @@ if __name__ == '__main__':
 
     print(box)
     x, y, w, h = box
-    img_test = cv2.imread(f"data/img/class3/{file_name}")
+
+    # box 크기가 a4용지 크기보다 커지는걸 방지
+    if x < 0 : x = 0;
+    if y < 0 : y = 0;
+    if x+w > 595 : w = 595-x;
+    if y+h > 842 : h = 842-y;
+    print(x, y, w, h)
+
+    img_test = cv2.imread(f"data/HTP_tree/{file_name}")
     height, width, t_channels = img_test.shape
     print(height, width)
     # cv2.circle(img_test, (50, 70), 5, (255, 0, 255), 6)
