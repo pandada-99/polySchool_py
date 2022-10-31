@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-def img_Contrast(img):
+def img_Contrast(img): # img 전처리 함수
     # -----Converting image to LAB Color model-----------------------------------
     lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
 
@@ -80,13 +80,13 @@ if __name__ == '__main__':
     # cv2.destroyAllWindows()
 
 
-    file_name = 'HTP_house_63.png'
+    file_name = 'HTP_tree_26.png'
     classes = []
     f = open('classes.txt', 'r')
     classes = [line.strip() for line in f.readlines()]
     colors = np.random.uniform(0, 255, size=(len(classes), 3))
 
-    img = cv2.imread(f"data/HTP_house/{file_name}")
+    img = cv2.imread(f"data/HTP_tree/{file_name}")
     ##### test 이미지 전처리 하기 #####
 
     # cv2.createCLAHE 균일화
@@ -156,7 +156,7 @@ if __name__ == '__main__':
     if y+h > height : h = height-y;
     print(x, y, w, h)
 
-    img_test = cv2.imread(f"data/HTP_house/{file_name}")
+    img_test = cv2.imread(f"data/HTP_tree/{file_name}")
     height, width, t_channels = img_test.shape
     print(height, width)
     # cv2.circle(img_test, (50, 70), 5, (255, 0, 255), 6)
