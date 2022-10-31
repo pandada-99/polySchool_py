@@ -398,4 +398,38 @@ if __name__ == '__main__':
     #     name = person_pt[i]
     #     f.write(f'/home/ai22/pythonProject/HTP/data/img_split/train/' + str(name) + "\n")
 
+
+
+
+
+
+    # 멍청한짓함.... 라벨을 바꿔줘야한다.....
+    # path = "./data/downsize/person_downsize/"
+    # file_list = os.listdir(path)
+    # person_pt = [file for file in file_list if file.endswith(".png")]
+    # person_lb = [file for file in file_list if file.endswith(".txt")]
+    #
+    # for i in range(len(person_lb)):
+    #     with open(f'./data/downsize/person_downsize/{person_lb[i]}', "r") as f:
+    #         box = f.read().split()
+    #         box[0] = '2'
+    #
+    #     with open(f'./data/downsize/person_downsize/{person_lb[i]}', "w") as f:
+    #         box = ' '.join(s for s in box)
+    #         f.writelines(box)
+
+    # path = "./data/downsize/tree_downsize/"
+    # file_list = os.listdir(path)
+    # tree_pt = [file for file in file_list if file.endswith(".png")]
+    # tree_lb = [file for file in file_list if file.endswith(".txt")]
+    #
+    # for i in range(len(tree_lb)):
+    #     with open(f'./data/downsize/tree_downsize/{tree_lb[i]}', "r") as f:
+    #         box = f.read().split()
+    #         box[0] = '1'
+    #
+    #     with open(f'./data/downsize/tree_downsize/{tree_lb[i]}', "w") as f:
+    #         box = ' '.join(s for s in box)
+    #         f.writelines(box)
+
     pass

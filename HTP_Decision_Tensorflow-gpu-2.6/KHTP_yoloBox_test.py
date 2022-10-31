@@ -61,7 +61,7 @@ import cv2
 import numpy as np
 
 if __name__ == '__main__':
-    file_name = '5.jpg'
+    file_name = 'tree.png'
     classes = []
     f = open('classes.txt', 'r')
     classes = [line.strip() for line in f.readlines()]
