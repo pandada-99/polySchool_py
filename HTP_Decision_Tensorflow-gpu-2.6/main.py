@@ -112,7 +112,7 @@ import splitfolders
 # list_train = os.listdir('./data/img_split/train')
 # list_val = os.listdir('./data/img_split/val')
 # path_train = '/home/ai22/pythonProject/HTP/data/img_split/train/'
-# path_val = './home/ai22/pythonProject/HTP/data/img_split/val/'
+# path_val = '/home/ai22/pythonProject/HTP/data/img_split/val/'
 # for name in list_train:
 #     f = open('./data/img_train.txt', 'a')
 #     f.write(path_train + name + "\n")

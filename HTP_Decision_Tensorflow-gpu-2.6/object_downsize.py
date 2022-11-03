@@ -389,7 +389,7 @@ if __name__ == '__main__':
 
 
     # ###### img 파일들의 경로를 텍스트 파일에 추가하기 ######
-    # path = "./data/downsize/person_downsize/"
+    # path = "./data/KHTP/book/"
     # file_list = os.listdir(path)
     # person_pt = [file for file in file_list if file.endswith(".png")]
     #
