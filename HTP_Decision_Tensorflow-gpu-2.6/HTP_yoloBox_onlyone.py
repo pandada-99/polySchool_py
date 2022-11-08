@@ -3,10 +3,6 @@ import numpy as np
 import os
 
 if __name__ == '__main__':
-    # file_name = 'house/paper_HTP_house_47.jpg'
-    # file_name = 'tree/paper_HTP_tree_46.jpg'
-    # file_name = 'person/paper_HTP_person_61.jpg'
-
     classes = []
     f = open('classes.txt', 'r')
     classes = [line.strip() for line in f.readlines()]
@@ -54,48 +50,51 @@ if __name__ == '__main__':
 
         # 노이즈 제거 (Non Maximum Suppression) (겹쳐 있는 박스 중 상자가 물체일 확률이 가장 높은 박스만 남겨둠)
         indexes = cv2.dnn.NMSBoxes(boxes, confidences, 0.4, 0.4)
-        num = 0
 
         if len(indexes) > 0:
-            for i in range(len(boxes)):
-                if i in indexes:
-                    x, y, w, h = boxes[i]
-                    box = boxes[i]
+            i = confidences.index(max(confidences))
+            # for i in range(len(boxes)):
+            #     if i in indexes:
+            x, y, w, h = boxes[i]
+            # box = boxes[i]
 
-                    # print("box의 좌표는 ", box)
-                    x, y, w, h = box
+            # print("box의 좌표는 ", box)
+            # x, y, w, h = box
 
-                    # box 크기가 a4용지 크기보다 커지는걸 방지
-                    if x < 0: x = 0;
-                    if y < 0: y = 0;
-                    if x + w > width: w = width - x;
-                    if y + h > height: h = height - y;
+            # box 크기가 a4용지 크기보다 커지는걸 방지
+            if x < 0: x = 0;
+            if y < 0: y = 0;
+            if x + w > width: w = width - x;
+            if y + h > height: h = height - y;
 
-                    text = str(classes[class_ids[i]]) + "%.2f" % confidences[i]
-                    cv2.rectangle(img, (x, y), (x + w, y + h), colors[class_ids[i]], 2)
-                    cv2.putText(img, text, (x, y + 30), cv2.FONT_HERSHEY_PLAIN, 2, colors[class_ids[i]], 2)
+            text = str(classes[class_ids[i]]) + "%.2f" % confidences[i]
+            cv2.rectangle(img, (x, y), (x + w, y + h), colors[class_ids[i]], 2)
+            cv2.putText(img, text, (x, y + 30), cv2.FONT_HERSHEY_PLAIN, 2, colors[class_ids[i]], 2)
 
-                    # box에 center 점 그리기
-                    center = (int(x + w / 2), int(y + h / 2))
-                    box_center_x = center[0]
-                    box_center_y = center[1]
-                    cv2.circle(img, center, 5, (255, 0, 255), 2)
-                    # print(f'중심점은 {center}')
+            # box에 center 점 그리기
+            center = (int(x + w / 2), int(y + h / 2))
+            box_center_x = center[0]
+            box_center_y = center[1]
+            cv2.circle(img, center, 5, (255, 0, 255), 2)
+            # print(f'중심점은 {center}')
 
-                    # box크기 비율 알기
-                    전체크기 = width * height
-                    디텍팅크기 = w * h
-                    비율 = 디텍팅크기 / 전체크기
-                    size = "%.2f" % 비율
-                    # print("비율 is", "%.2f" % 비율)
+            # box크기 비율 알기
+            전체크기 = width * height
+            디텍팅크기 = w * h
+            비율 = 디텍팅크기 / 전체크기
+            size = "%.2f" % 비율
+            # print("비율 is", "%.2f" % 비율)
+
+            f = open(f'./data/HTP_paper/house_ver3_best/ver3_best_{file_name[:-4]}.txt', 'a')
+            f.write(classes[class_ids[i]] + ', ' + str(x) + ', ' + str(y) + ', ' + str(w) + ', ' + str(h) + '\n') # x, y, w, h
+            f.write(str(box_center_x) + ', ' + str(box_center_y) + '\n') # c_x, c_y
+            f.write(str(size))
         else:
             print('탐지된 물체가 없습니다.')
+            f = open(f'./data/HTP_paper/house_ver3_best/ver3_best_{file_name[:-4]}.txt', 'a')
+            f.write(' ')
 
-        # cv2.imwrite(f'./data/HTP_paper/house_ver3_best/ver3_best_{file_name}', img)
-        # f = open(f'./data/HTP_paper/house_ver3_best/ver3_best_{file_name[:-4]}.txt', 'a')
-        # f.write(str(x) + ', ' + str(y) + ', ' + str(w) + ', ' + str(h) + '\n') # x, y, w, h
-        # f.write(str(box_center_x) + ', ' + str(box_center_y) + '\n') # c_x, c_y
-        # f.write(str(size))
+        cv2.imwrite(f'./data/HTP_paper/house_ver3_best/ver3_best_{file_name}', img)
 
     # cv2.imshow('HTP Object detection', img)
     # cv2.waitKey(0)
