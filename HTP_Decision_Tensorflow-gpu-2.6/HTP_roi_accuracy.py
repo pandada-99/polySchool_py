@@ -158,12 +158,90 @@ if __name__ == '__main__':
 
     ax[1].plot(confidence_list, F1_score_mean_list, 'bo-')
     ax[1].set_xlabel('confidence threshold')
-    ax[1].set_title('F1_score', fontsize=20)
+    ax[1].set_title('F1-score', fontsize=20)
     ax[1].set_xticks([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
     ax[1].set_yticks([0.7, 0.75, 0.8, 0.85, 0.9, 0.95])
     for i in range(len(confidence_list)):
         height = F1_score_mean_list[i]
         ax[1].text(confidence_list[i], height - 0.0085, '%.2f' %height, ha='center', va='bottom', size=12)
+
+
+    house_accuracy = [Accuracy_list[0], Accuracy_list[3], Accuracy_list[6],
+                    Accuracy_list[9], Accuracy_list[12], Accuracy_list[15],
+                    Accuracy_list[18], Accuracy_list[21], Accuracy_list[24]]
+    tree_accuracy = [Accuracy_list[1], Accuracy_list[4], Accuracy_list[7],
+                    Accuracy_list[10], Accuracy_list[13], Accuracy_list[16],
+                    Accuracy_list[19], Accuracy_list[22], Accuracy_list[25]]
+    person_accuracy = [Accuracy_list[2], Accuracy_list[5], Accuracy_list[8],
+                    Accuracy_list[11], Accuracy_list[14], Accuracy_list[17],
+                    Accuracy_list[20], Accuracy_list[23], Accuracy_list[26]]
+
+    f, bx = plt.subplots(1, 3, figsize=(16, 8))
+    bx[0].plot(confidence_list, house_accuracy, 'go-')
+    bx[0].set_xlabel('confidence threshold')
+    bx[0].set_title('house accuracy', fontsize=20)
+    bx[0].set_xticks([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+    bx[0].set_yticks([0.7, 0.75, 0.8, 0.85, 0.9, 0.95])
+    for i in range(len(confidence_list)):
+        height = house_accuracy[i]
+        bx[0].text(confidence_list[i], height - 0.0085, '%.2f' % height, ha='center', va='bottom', size=12)
+
+    bx[1].plot(confidence_list, tree_accuracy, 'bo-')
+    bx[1].set_xlabel('confidence threshold')
+    bx[1].set_title('tree accuracy', fontsize=20)
+    bx[1].set_xticks([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+    bx[1].set_yticks([0.7, 0.75, 0.8, 0.85, 0.9, 0.95])
+    for i in range(len(confidence_list)):
+        height = tree_accuracy[i]
+        bx[1].text(confidence_list[i], height - 0.0085, '%.2f' % height, ha='center', va='bottom', size=12)
+
+    bx[2].plot(confidence_list, person_accuracy, 'ro-')
+    bx[2].set_xlabel('confidence threshold')
+    bx[2].set_title('person accuracy', fontsize=20)
+    bx[2].set_xticks([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+    bx[2].set_yticks([0.7, 0.75, 0.8, 0.85, 0.9, 0.95])
+    for i in range(len(confidence_list)):
+        height = person_accuracy[i]
+        bx[2].text(confidence_list[i], height - 0.0085, '%.2f' % height, ha='center', va='bottom', size=12)
+
+
+    house_f1 = [F1_score_list[0], F1_score_list[3], F1_score_list[6],
+                F1_score_list[9], F1_score_list[12], F1_score_list[15],
+                F1_score_list[18], F1_score_list[21], F1_score_list[24]]
+    tree_f1 = [F1_score_list[1], F1_score_list[4], F1_score_list[7],
+                F1_score_list[10], F1_score_list[13], F1_score_list[16],
+                F1_score_list[19], F1_score_list[22], F1_score_list[25]]
+    person_f1 = [F1_score_list[2], F1_score_list[5], F1_score_list[8],
+                F1_score_list[11], F1_score_list[14], F1_score_list[17],
+                F1_score_list[20], F1_score_list[23], F1_score_list[26]]
+
+    f, cx = plt.subplots(1, 3, figsize=(16, 8))
+    cx[0].plot(confidence_list, house_f1, 'go-')
+    cx[0].set_xlabel('confidence threshold')
+    cx[0].set_title('house F1-score', fontsize=20)
+    cx[0].set_xticks([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+    cx[0].set_yticks([0.7, 0.75, 0.8, 0.85, 0.9, 0.95])
+    for i in range(len(confidence_list)):
+        height = house_f1[i]
+        cx[0].text(confidence_list[i], height - 0.0085, '%.2f' % height, ha='center', va='bottom', size=12)
+
+    cx[1].plot(confidence_list, tree_f1, 'bo-')
+    cx[1].set_xlabel('confidence threshold')
+    cx[1].set_title('tree F1-score', fontsize=20)
+    cx[1].set_xticks([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+    cx[1].set_yticks([0.7, 0.75, 0.8, 0.85, 0.9, 0.95])
+    for i in range(len(confidence_list)):
+        height = tree_f1[i]
+        cx[1].text(confidence_list[i], height - 0.0085, '%.2f' % height, ha='center', va='bottom', size=12)
+
+    cx[2].plot(confidence_list, person_f1, 'ro-')
+    cx[2].set_xlabel('confidence threshold')
+    cx[2].set_title('person F1-score', fontsize=20)
+    cx[2].set_xticks([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+    cx[2].set_yticks([0.7, 0.75, 0.8, 0.85, 0.9, 0.95])
+    for i in range(len(confidence_list)):
+        height = person_f1[i]
+        cx[2].text(confidence_list[i], height - 0.0085, '%.2f' % height, ha='center', va='bottom', size=12)
 
     plt.show()
 """
