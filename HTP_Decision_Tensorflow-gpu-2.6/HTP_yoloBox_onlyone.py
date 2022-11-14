@@ -8,12 +8,12 @@ if __name__ == '__main__':
     classes = [line.strip() for line in f.readlines()]
     colors = np.random.uniform(0, 255, size=(len(classes), 3))
 
-    path_tree = "./data/HTP_paper/person/"
-    file_list = os.listdir(path_tree)
+    path = "./data/HTP_paper/house/"
+    file_list = os.listdir(path)
 
     for name in file_list:
         file_name = f'{name}'
-        img = cv2.imread(f"./data/HTP_paper/person/{file_name}")
+        img = cv2.imread(f"./data/HTP_paper/house/{file_name}")
 
         if img.shape[0] > img.shape[1]:
             img = cv2.resize(img, (595, 842))
@@ -23,7 +23,7 @@ if __name__ == '__main__':
         height, width, channels = img.shape
         blob = cv2.dnn.blobFromImage(img, 1.0 / 256, (448, 448), (0, 0, 0), swapRB=True, crop=False)
 
-        yolo_model = cv2.dnn.readNet("./data/backup_ver3/custom_best.weights", "./data/backup_ver3/custom.cfg")
+        yolo_model = cv2.dnn.readNet("./data/backup_ver4/custom_best.weights", "./data/backup_ver4/custom.cfg")
         layer_names = yolo_model.getLayerNames()
         out_layers = [layer_names[i - 1] for i in yolo_model.getUnconnectedOutLayers()]
 
@@ -86,17 +86,17 @@ if __name__ == '__main__':
             size = "%.2f" % 비율
             # print("비율 is", "%.2f" % 비율)
 
-            f = open(f'./data/HTP_paper/person_ver3_best/ver3_best_{file_name[:-4]}.txt', 'a')
+            f = open(f'./data/HTP_paper/house_ver4_best/ver4_best_{file_name[:-4]}.txt', 'a')
             f.write(classes[class_ids[i]] + ', ' + str(confi) + '\n') # class, confidences
             f.write(str(x) + ', ' + str(y) + ', ' + str(w) + ', ' + str(h) + '\n') # x, y, w, h
             f.write(str(box_center_x) + ', ' + str(box_center_y) + '\n') # c_x, c_y
             f.write(str(size))
         else:
             print('탐지된 물체가 없습니다.')
-            f = open(f'./data/HTP_paper/person_ver3_best/ver3_best_{file_name[:-4]}.txt', 'a')
+            f = open(f'./data/HTP_paper/house_ver4_best/ver4_best_{file_name[:-4]}.txt', 'a')
             f.write(' ')
 
-        cv2.imwrite(f'./data/HTP_paper/person_ver3_best/ver3_best_{file_name}', img)
+        cv2.imwrite(f'./data/HTP_paper/house_ver4_best/ver4_best_{file_name}', img)
 
     # cv2.imshow('HTP Object detection', img)
     # cv2.waitKey(0)
