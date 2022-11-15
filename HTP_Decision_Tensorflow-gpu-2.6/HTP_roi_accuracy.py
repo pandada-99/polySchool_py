@@ -65,7 +65,7 @@ if __name__ == '__main__':
             house_gt = [file for file in gt_box if file.endswith(".json")]
             house_img = [file for file in gt_box if file.endswith(".JPG")]
 
-            pred_path = f"./data/HTP_paper/{name}_ver4_best/"
+            pred_path = f"./data/HTP_paper/{name}_ver3_best/"
             pred_box = os.listdir(pred_path)
             house_pred = [file for file in pred_box if file.endswith(".txt")]
 
