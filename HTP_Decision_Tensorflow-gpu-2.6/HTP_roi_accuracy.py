@@ -60,12 +60,12 @@ if __name__ == '__main__':
         list_name = ['house', 'tree', 'person']
         result_list = []
         for name in list_name:
-            gt_path = f"./data/HTP_paper/{name}_answer/"
+            gt_path = f"./data/HTP_paper/{name}_answer_416/"
             gt_box = os.listdir(gt_path)
             house_gt = [file for file in gt_box if file.endswith(".json")]
             house_img = [file for file in gt_box if file.endswith(".JPG")]
 
-            pred_path = f"./data/HTP_paper/{name}_ver3_best/"
+            pred_path = f"./data/HTP_paper/{name}_ver3_416/"
             pred_box = os.listdir(pred_path)
             house_pred = [file for file in pred_box if file.endswith(".txt")]
 
